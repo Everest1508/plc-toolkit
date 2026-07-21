@@ -9,12 +9,6 @@ MacAddress::MacAddress(std::string_view str) {
     *this = fromString(str);
 }
 
-MacAddress MacAddress::fromBytes(const std::array<uint8_t, 6>& bytes) {
-    MacAddress m;
-    m.m_bytes = bytes;
-    return m;
-}
-
 MacAddress MacAddress::fromString(std::string_view str) {
     if (str.size() != 17) {
         throw std::invalid_argument("MAC address must be 17 characters (xx:xx:xx:xx:xx:xx)");

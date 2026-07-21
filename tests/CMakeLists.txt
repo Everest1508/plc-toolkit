@@ -11,6 +11,8 @@ FetchContent_MakeAvailable(Catch2)
 add_executable(plc-tests
     test_mac.cpp
     test_frame.cpp
+    test_dcp_builder.cpp
+    test_dcp_parser.cpp
 )
 
 target_link_libraries(plc-tests PRIVATE plc-netlib Catch2::Catch2WithMain)

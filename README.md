@@ -4,12 +4,12 @@ A C++ library and toolset for PLC communication over Ethernet. Built from scratc
 
 ## Current Status
 
-**Milestone 1 — Network Foundation** (complete)
+**Milestone 2 — PROFINET DCP** (complete)
 
-- Enumerate system network adapters via Npcap
-- Select and open an adapter
-- `MacAddress` and `EthernetFrame` types
-- Catch2 unit tests
+- Discover PROFINET devices on the network (like TIA Portal does)
+- DCP Identify Request builder and response parser
+- Full device info display: station name, IP, MAC, vendor, device ID, role
+- 24 unit tests covering protocol parsing
 
 ## Requirements
 
@@ -32,24 +32,49 @@ Npcap SDK is included in `third_party/npca-sdk/` — no separate download needed
 ## Usage
 
 ```bash
+# List adapters
 ./build/src/plcscan.exe
+
+# Discover PROFINET devices
+./build/src/plcscan.exe scan
 ```
+
+### List adapters
 
 ```
 Available adapters:
 
   [0] WAN Miniport (Network Monitor)
-  [1] Hyper-V Virtual Ethernet Adapter (172.24.176.1)
   [5] Killer E2600 Gigabit Ethernet Controller (192.168.0.1)
   [6] Killer Wi-Fi 6 AX1650i (192.168.1.17)
   ...
+```
+
+### Scan for PROFINET devices
+
+```
+> plcscan scan
+
+Available adapters:
+
+  [5] Killer E2600 Gigabit Ethernet Controller (192.168.0.1)
 
 Select: 5
 
 Adapter opened.
-  Name:        \Device\NPF_{...}
-  Description: Killer E2600 Gigabit Ethernet Controller
-  IPv4:        192.168.0.1
+Scanning for PROFINET devices...
+
+Found 1 device(s):
+
+  [0] plc_1
+      MAC:        00:1e:c0:xx:xx:xx
+      IP:         192.168.0.2
+      Netmask:    255.255.255.0
+      Gateway:    192.168.0.1
+      Vendor:     0x002a (Siemens AG)
+      Device:     0x0301
+      Role:       IO-Controller
+      Instance:   0.0
 ```
 
 ## Tests
@@ -67,22 +92,40 @@ include/
   common/       shared types (ByteVec, Error)
   ethernet/     MAC addresses, Ethernet frames, adapter abstraction
   network/      raw pcap wrapper (Capture)
-  profinet/     PROFINET DCP (planned)
+  profinet/     PROFINET DCP (DCP builder, parser, scanner)
   s7/           S7 communication (planned)
 
 src/
   main.cpp      plcscan executable
   ethernet/     library implementations
   network/      pcap wrapper implementation
+  profinet/     DCP builder, parser, scanner
 
 tests/          Catch2 unit tests
 docs/           protocol documentation
 third_party/    Npcap SDK
 ```
 
+## Architecture
+
+```
+plcscan (CLI)
+  └── ProfinetScanner
+        └── DcpBuilder (builds Identify Request)
+        └── DcpParser (parses Identify Response)
+        └── EthernetAdapter (raw frame send/receive)
+              └── Capture (Npcap wrapper)
+                    └── Npcap → Windows kernel → Ethernet NIC
+```
+
 ## Roadmap
 
 See [docs/roadmap.md](docs/roadmap.md).
+
+- Milestone 1: Network Foundation ✓
+- Milestone 2: PROFINET DCP ✓
+- Milestone 3: S7 Communication (planned)
+- Milestone 4: TIA Integration (future)
 
 ## License
 

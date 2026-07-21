@@ -69,7 +69,7 @@ bool Capture::open(const std::string& deviceName) {
     }
 
     char errbuf[PCAP_ERRBUF_SIZE];
-    m_handle = pcap_open_live(deviceName.c_str(), 65535, 0, 1000, errbuf);
+    m_handle = pcap_open_live(deviceName.c_str(), 65535, 1, 1000, errbuf);
     return m_handle != nullptr;
 }
 

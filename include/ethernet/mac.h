@@ -12,7 +12,11 @@ public:
     MacAddress() = default;
     explicit MacAddress(std::string_view str);
 
-    static MacAddress fromBytes(const std::array<uint8_t, 6>& bytes);
+    static constexpr MacAddress fromBytes(const std::array<uint8_t, 6>& bytes) {
+        MacAddress m;
+        m.m_bytes = bytes;
+        return m;
+    }
     static MacAddress fromString(std::string_view str);
 
     const std::array<uint8_t, 6>& bytes() const;
